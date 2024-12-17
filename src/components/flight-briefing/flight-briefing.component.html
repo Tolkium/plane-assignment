@@ -1,0 +1,107 @@
+<form
+   (ngSubmit)="onSubmit()"
+   [formGroup]="briefingForm"
+   class="bg-blue-smoke-800 border-solid border-2 border-blue-smoke-700 rounded-lg shadow-xl p-8">
+   <h2 class="text-3xl font-bold mb-6 text-gray-100 text-center">Flight Briefing</h2>
+
+   <div class="mb-5">
+      <label class="block mb-2 font-semibold text-gray-200">Meteorological Reports</label>
+      <div class="space-x-3 flex flex-row">
+         @for(reportType of reportTypeKeys; track reportType) {
+            <div
+               class="flex items-center">
+               <input
+                  type="checkbox"
+                  [formControlName]="reportType"
+                  [id]="reportType"
+                  class="hidden" />
+               <label
+                  [for]="reportType"
+                  class="flex items-center cursor-pointer text-gray-300 relative">
+                  <span
+                     class="w-5 h-5 inline-flex items-center justify-center border border-blue-smoke-600 rounded bg-blue-smoke-700 transition duration-400 mr-2"
+                     [ngClass]="{ 'bg-blue-smoke-500 border-blue-smoke-500': briefingForm.get(reportType)?.value }">
+                     <svg
+                        class="w-3 h-3 text-white"
+                        [ngClass]="{ hidden: !briefingForm.get(reportType)?.value }"
+                        fill="currentColor">
+                        <use xlink:href="assets/icons/plane-checkbox.svg#airplane-icon"></use>
+                     </svg>
+                  </span>
+
+                  <span class="select-none">{{ getReportTypeLabel(reportType) }}</span>
+               </label>
+            </div>
+         }
+      </div>
+      @if (briefingForm.errors?.['atLeastOneReportRequired']) {
+         <div
+            class="text-red-400 text-sm mt-1">
+            Please select at least one report type.
+         </div>
+      }  
+   </div>
+
+   <div class="mb-5">
+      <label
+         for="stations"
+         class="block mb-2 font-semibold text-gray-200"
+         >Airports (ICAO codes)</label
+      >
+      <input
+         type="text"
+         id="stations"
+         formControlName="stations"
+         class="w-full px-3 py-2 bg-blue-smoke-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-smoke-500 "
+         placeholder="e.g.: EGLL KJFK" />
+      
+      @if (briefingForm.get('stations')?.errors?.['invalidIcaoCodes']) {
+         <div
+            class="text-red-400 text-sm mt-1">
+            Please enter valid ICAO codes (4 uppercase letters) separated by spaces.
+         </div>
+      }
+   </div>
+
+   <div class="mb-5">
+      <label
+         for="countries"
+         class="block mb-2 font-semibold text-gray-200"
+         >Countries (WMO codes)</label
+      >
+      <input
+         type="text"
+         id="countries"
+         formControlName="countries"
+         class="w-full px-3 py-2 bg-blue-smoke-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-smoke-500 placeholder-gray-400"
+         placeholder="e.g.: SQ CZ" />
+      @if (briefingForm.get('countries')?.errors?.['invalidWmoCodes']) {
+         <div
+            class="text-red-400 text-sm mt-1">
+            Please enter valid WMO codes (2 uppercase letters) separated by spaces.
+         </div>
+      }
+   </div>
+
+   @if (briefingForm.errors?.['atLeastOneLocationRequired']) {
+      <div
+         class="text-red-400 text-sm mb-4">
+         Please specify at least one airport or country code.
+      </div>
+   }
+
+   <button
+      appClickEffect
+      type="submit"
+      [disabled]="!briefingForm.valid"
+      class="w-full airplane-cursor bg-dark-orange text-white py-2 px-4 rounded-md hover:bg-dark-orange-hover focus:outline-none focus:ring-2 focus:ring-blue-smoke-500 focus:ring-offset-2 focus:ring-offset-blue-smoke-800 disabled:bg-blue-smoke-600 disabled:text-gray-400 disabled:cursor-not-allowed transition duration-150 ease-in-out">
+      Create Briefing
+   </button>
+
+   @if (submitError) {
+      <div
+         class="text-red-400 text-md mt-5">
+         {{ submitError }}
+      </div>
+   }
+</form>

@@ -1,0 +1,35 @@
+<div
+   class="bg-blue-smoke-800 border-solid border-2 border-blue-smoke-700 bg-opacity-75 backdrop-blur-md rounded-lg shadow-xl p-4">
+   @if(results && Object.keys(results).length) {
+      <h2 class="text-3xl font-bold my-6 text-gray-100 text-center">Pilot Briefing Product</h2>
+
+      <table class="w-full border-separate border-spacing-0 text-sm">
+         @for(key of Object.keys(results); track key) {
+            <tbody class="mb-3 block w-full">
+               <tr class="w-full flex">
+                  <th class="bg-blue-smoke-700 text-gray-100 bg-opacity-75 font-semibold p-3 text-left rounded-t-lg border border-gray-600 w-full"
+                     colSpan="3">
+                     {{ key }}
+                  </th>
+               </tr>
+               <tr class="bg-blue-smoke-800 text-gray-200 w-full flex" *ngFor="let flight of results[key]; let isLast = last">
+                  <td class="p-3 border-b border-l border-gray-600 w-2/5" [ngClass]="{ 'rounded-bl-lg': isLast }">
+                     {{ flight.queryType }}
+                  </td>
+                  <td class="p-3 border-b border-gray-600 w-1/5">
+                     {{ flight.reportTime | date: "d.M.Y HH:mm:ss" }}
+                  </td>
+                  <td class="p-3 border-b border-r border-gray-600 w-full" [ngClass]="{ 'rounded-br-lg': isLast }"
+                     [appHighlightCondition]="flight.text">
+                     {{ flight.text }}
+                  </td>
+               </tr>
+            </tbody>
+         }
+      </table>
+   }
+
+   @else {
+      <h2 class="text-center text-gray-100 text-2xl">No results found...</h2>
+   }
+</div>
